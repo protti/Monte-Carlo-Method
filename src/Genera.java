@@ -6,16 +6,19 @@ public class Genera {
 	private boolean show = false;
 	private volatile int numberAttempts;
 	private volatile int numberSuccess;
-	private static final long  attempts = 999999999;
+	private static final long  attempts = 9999999;
 	private Logger log = Logger.getLogger("OFF");
-	
+	Object lock1 = new Object();
+	Object lock2 = new Object();
+	Object lock3 = new Object();
+	Object lock4 = new Object();
 
 
 
-	synchronized public void genera(int valore,Generatori ge) 
+	public void genera(int valore,Generatori ge) 
 	{
 		log.setUseParentHandlers(false);
-		if(numberAttempts == attempts)
+		if(numberAttempts > attempts)
 		{
 			log.info("Lanciata");
 			if(!show)
@@ -28,16 +31,24 @@ public class Genera {
 		else
 		{
 			log.info("Sono il thread numero:"+valore);
-			x = Math.random();
-			y = Math.random();
-			z = x*x+y*y;
-			if(z < 1)
-			{
-				numberAttempts++;
-				numberSuccess++;
-			}	
-			else
-				numberAttempts++;
+			double result;
+			synchronized (lock1) {
+				x = Math.random();
+				y = Math.random();
+				z = x*x+y*y;
+				
+			}
+			synchronized (lock2) {
+				if(z < 1)
+				{
+					
+					numberAttempts++;
+					numberSuccess++;
+				}	
+				else
+					numberAttempts++;
+
+			}
 		}
 
 	}
@@ -48,12 +59,11 @@ public class Genera {
 		return value;
 
 	}
-	
+
 	public void setBoolean()
 	{
 		this.show = false;
 	}
 
-
-
+	
 }
