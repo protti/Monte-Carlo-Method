@@ -2,20 +2,16 @@ import java.util.logging.Logger;
 
 public class Genera {
 
-	private double x,y,z;
 	private boolean show = false;
 	private volatile int numberAttempts;
 	private volatile int numberSuccess;
-	private static final long  attempts = 9999999;
-	private Logger log = Logger.getLogger("OFF");
+	private static final long  attempts = 10000000;
+	private Logger log = Logger.getLogger("Global");
 	Object lock1 = new Object();
 	Object lock2 = new Object();
-	Object lock3 = new Object();
-	Object lock4 = new Object();
 
 
-
-	public void genera(int valore,Generatori ge) 
+	public void genera(int valore,Generatori ge,double z) 
 	{
 		log.setUseParentHandlers(false);
 		if(numberAttempts > attempts)
@@ -30,25 +26,32 @@ public class Genera {
 		}
 		else
 		{
-			log.info("Sono il thread numero:"+valore);
-			double result;
-			synchronized (lock1) {
-				x = Math.random();
-				y = Math.random();
-				z = x*x+y*y;
-				
-			}
-			synchronized (lock2) {
+			 
 				if(z < 1)
 				{
+					//log.info("Thread: "+Thread.currentThread()+" z vale: " + z);
+					synchronized (lock2)
+					{
+						log.info("Thread: "+Thread.currentThread()+" tentativi vale: " + numberAttempts);
+						numberAttempts++;
+					}
+					synchronized (lock1) {
+						numberSuccess++;
+						log.info("Thread: "+Thread.currentThread()+" tentativi riusciti vale: " + numberSuccess);
+					}
+						
 					
-					numberAttempts++;
-					numberSuccess++;
 				}	
 				else
-					numberAttempts++;
+				{
+					synchronized (lock2)
+					{
+						log.info("Thread: "+Thread.currentThread()+" tentativi vale: " + numberAttempts);
+						numberAttempts++;
+					}
+				}
 
-			}
+			
 		}
 
 	}
@@ -64,6 +67,5 @@ public class Genera {
 	{
 		this.show = false;
 	}
-
 	
 }

@@ -22,8 +22,11 @@ public class Generatori extends Thread{
 		// TODO Auto-generated method stub
 			while(true)
 			{
+				double x = Math.random();
+				double y = Math.random();
+				double z = (double)x*x+y*y;
 				try {
-					gen.genera(valore,this);
+					gen.genera(valore,this,z);
 				} catch (IllegalArgumentException e) {
 					break;
 				}
